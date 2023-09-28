@@ -1,7 +1,3 @@
-* {
-    box-sizing: border-box;
-}
-
 body {
     padding-left: 100px;
     padding-right: 100px;
@@ -19,7 +15,7 @@ img {
 }
   
 .breed-select {
-    width: 340px;
+    max-width: 340px;
     margin-bottom: 20px;
     padding: 4px;
 }
