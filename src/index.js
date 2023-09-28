@@ -1,49 +1,64 @@
 import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 import Swal from 'sweetalert2';
+import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
-const breedSelect = document.querySelector(".breed-select");
-const breedName = document.querySelector("#breed-name");
-const breedDecription = document.querySelector("#breed-description");
-const breedTemparament = document.querySelector("#breed-temperament");
-const loader = document.querySelector(".loader");
+const breedSelect = document.querySelector('.breed-select');
+const catInfo = document.querySelector('.cat-info');
+const loader = document.querySelector('.loader');
+const error = document.querySelector('.error');
 
+catInfo.classList.add('is-hidden');
 
-fetchBreeds()
-.then((breeds)=>{
-    breeds.forEach((breed) => {
-        const option = document.createElement("option");
-        option.value = breed.id;
-        option.textContent = breed.name;
-        breedSelect.appendChild(option);
-    });
-    loader.style.display = "none";
-})
-.catch((err) =>{
-    loader.style.display = "none"; 
+breedSelect.addEventListener('change', createMarkup);
+
+updateSelect();
+
+function updateSelect(data) {
+    loader.classList.remove('is-hidden'); 
+    breedSelect.classList.add('is-hidden'); 
+
+  fetchBreeds(data)
+    .then(data => {
+        loader.classList.add('is-hidden');
+        breedSelect.classList.remove('is-hidden')
+        let markSelect = data.map(({ name, id }) => {
+            return `<option value ='${id}'>${name}</option>`;
+        });
+        breedSelect.insertAdjacentHTML('beforeend', markSelect);
+        new SlimSelect({
+            select: breedSelect,
+        });
+    })
+    .catch(onFetchError);
+}
+
+function createMarkup(event) {
+    loader.classList.remove('is-hidden'); 
+    breedSelect.classList.add('is-hidden');
+    catInfo.classList.add('is-hidden');
+    
+    const breedId = event.currentTarget.value;
+    
+    fetchCatByBreed(breedId)
+    .then(data => {
+        loader.classList.replace('loader', 'is-hidden');
+        breedSelect.classList.remove('is-hidden');
+        const { url, breeds } = data[0];
+        
+        catInfo.innerHTML = `<img src="${url}" alt="${breeds[0].name}" width="400"/><div class="box"><h2>${breeds[0].name}</h2><p>${breeds[0].description}</p><p><strong>Temperament:</strong> ${breeds[0].temperament}</p></div>`;
+        catInfo.classList.remove('is-hidden');
+    })
+    .catch(onFetchError);
+}
+
+function onFetchError() {
+    loader.classList.add('is-hidden'); 
+    breedSelect.classList.remove('is-hidden')
+
     Swal.fire({
         icon: 'error',
         title: 'Oops!',
-        text: 'Error fetching cat breeds. Try reloading the page!',
+        text: 'Oops! Something went wrong! Try reloading the page!',
     });
-});
-
-breedSelect.addEventListener("change", () =>{
-    const selectedBreedId = breedSelect.value;
-    loader.style.display = "block";
-    fetchCatByBreed(selectedBreedId)
-    .then((catInfo)=>{
-        const [cat] = catInfo;
-        breedName.textContent = cat.breeds[0].name;
-        breedDecription.textContent = cat.breeds[0].description;
-        breedTemparament.textContent = cat.breeds[0].temperament;
-        loader.style.display = "none";
-    })
-    .catch((err)=>{
-        loader.style.display = "none"; 
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: 'Error fetching cat information. Try again later!',
-        }); 
-    })
-})
+}
