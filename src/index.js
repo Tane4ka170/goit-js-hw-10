@@ -21,7 +21,8 @@ function updateSelect(data) {
   fetchBreeds(data)
     .then(data => {
         loader.classList.add('is-hidden');
-        breedSelect.classList.remove('is-hidden')
+        breedSelect.classList.remove('is-hidden');
+        breedSelect.innerHTML = '';
         let markSelect = data.map(({ name, id }) => {
             return `<option value ='${id}'>${name}</option>`;
         });
@@ -29,6 +30,7 @@ function updateSelect(data) {
         new SlimSelect({
             select: breedSelect,
         });
+
     })
     .catch(onFetchError);
 }
@@ -42,7 +44,7 @@ function createMarkup(event) {
     
     fetchCatByBreed(breedId)
     .then(data => {
-        loader.classList.replace('loader', 'is-hidden');
+        loader.classList.add('is-hidden');
         breedSelect.classList.remove('is-hidden');
         const { url, breeds } = data[0];
         
