@@ -1,4 +1,4 @@
-import { fetchBreeds, fetchCatByBreed } from "./cat-api";
+import { getBreeds, getCatByBreed } from "./cat-api";
 import Swal from 'sweetalert2';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
@@ -18,7 +18,7 @@ function updateSelect(data) {
     loader.classList.remove('is-hidden'); 
     breedSelect.classList.add('is-hidden'); 
 
-  fetchBreeds(data)
+  getBreeds(data)
     .then(data => {
         loader.classList.add('is-hidden');
         breedSelect.classList.remove('is-hidden');
@@ -32,7 +32,7 @@ function updateSelect(data) {
         });
 
     })
-    .catch(onFetchError);
+    .catch(onError);
 }
 
 function createMarkup(event) {
@@ -42,7 +42,7 @@ function createMarkup(event) {
     
     const breedId = event.currentTarget.value;
     
-    fetchCatByBreed(breedId)
+    getCatByBreed(breedId)
     .then(data => {
         loader.classList.add('is-hidden');
         breedSelect.classList.remove('is-hidden');
@@ -51,10 +51,10 @@ function createMarkup(event) {
         catInfo.innerHTML = `<img src="${url}" alt="${breeds[0].name}" width="400"/><div class="box"><h2>${breeds[0].name}</h2><p>${breeds[0].description}</p><p><strong>Temperament:</strong> ${breeds[0].temperament}</p></div>`;
         catInfo.classList.remove('is-hidden');
     })
-    .catch(onFetchError);
+    .catch(onError);
 }
 
-function onFetchError() {
+function onError() {
     loader.classList.add('is-hidden'); 
     breedSelect.classList.remove('is-hidden')
 
