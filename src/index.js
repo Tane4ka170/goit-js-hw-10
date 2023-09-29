@@ -1,4 +1,4 @@
-import { fetchBreeds, fetchCatByBreed } from "./cat-api";
+import { fetchBreeds, fetchCatByBreed } from "./js/cat-api";
 import Swal from 'sweetalert2';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
@@ -16,7 +16,6 @@ updateSelect();
 
 function updateSelect(data) {
     loader.classList.remove('is-hidden'); 
-    breedSelect.classList.add('is-hidden'); 
 
   fetchBreeds(data)
     .then(data => {
@@ -36,8 +35,7 @@ function updateSelect(data) {
 }
 
 function createMarkup(event) {
-    loader.classList.remove('is-hidden'); 
-    breedSelect.classList.add('is-hidden');
+    loader.classList.remove('is-hidden'); ;
     catInfo.classList.add('is-hidden');
     
     const breedId = event.currentTarget.value;
@@ -55,12 +53,12 @@ function createMarkup(event) {
 }
 
 function onError() {
-    loader.classList.add('is-hidden'); 
-    breedSelect.classList.remove('is-hidden')
+    loader.classList.add('is-hidden');
+    breedSelect.innerHTML = '';
 
     Swal.fire({
         icon: 'error',
         title: 'Oops!',
-        text: 'Oops! Something went wrong! Try reloading the page!',
+        text: 'Something went wrong! Try reloading the page!',
     });
 }
