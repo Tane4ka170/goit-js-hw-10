@@ -1,4 +1,4 @@
-import { getBreeds, getCatByBreed } from "./cat-api";
+import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 import Swal from 'sweetalert2';
 import SlimSelect from 'slim-select';
 import 'slim-select/dist/slimselect.css';
@@ -18,7 +18,7 @@ function updateSelect(data) {
     loader.classList.remove('is-hidden'); 
     breedSelect.classList.add('is-hidden'); 
 
-  getBreeds(data)
+  fetchBreeds(data)
     .then(data => {
         loader.classList.add('is-hidden');
         breedSelect.classList.remove('is-hidden');
@@ -42,7 +42,7 @@ function createMarkup(event) {
     
     const breedId = event.currentTarget.value;
     
-    getCatByBreed(breedId)
+    fetchCatByBreed(breedId)
     .then(data => {
         loader.classList.add('is-hidden');
         breedSelect.classList.remove('is-hidden');
